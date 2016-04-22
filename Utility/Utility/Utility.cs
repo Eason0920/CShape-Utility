@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;   //捉 Server IP 用
 using System.Web;
+using System.Configuration;
 
 //網站共用功能函式庫
 namespace Common.tools {
@@ -410,6 +411,30 @@ namespace Common.tools {
             }
 
             return ResultNewBitMap;
+        }
+
+        #endregion
+
+        #region *** 取得 web.config 或 app.config AppSettings 值 ***
+
+        /// <summary>
+        /// 取得 web.config 或 app.config AppSettings 值
+        /// </summary>
+        /// <param name="key">AppSettings key 名</param>
+        /// <returns></returns>
+        public static string getAppSettings(string key) {
+            return ConfigurationManager.AppSettings[key];
+        }
+
+        /// <summary>
+        /// 取得 web.config 或 app.config AppSettings 值
+        /// </summary>
+        /// <param name="key">AppSettings key 名</param>
+        /// <param name="defaultValue">若無取得相對應資料，預設傳回的值</param>
+        /// <returns></returns>
+        public static string getAppSettings(string key, string defaultValue) {
+            string result = ConfigurationManager.AppSettings[key];
+            return ((string.IsNullOrEmpty(result)) ? defaultValue : result);
         }
 
         #endregion
