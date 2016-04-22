@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;   //捉 Server IP 用
 using System.Web;
 
 //網站共用功能函式庫
-namespace tw.net.ebc {
+namespace common.tools.function {
 
     /// <summary>
     /// 網站共用的功能
