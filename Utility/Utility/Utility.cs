@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;   //捉 Server IP 用
 using System.Web;
 using System.Configuration;
+using System.Collections.Generic;
 
 //網站共用功能函式庫
 namespace Common.tools {
@@ -277,8 +278,8 @@ namespace Common.tools {
             try {
                 ts = DateTime.Now - Convert.ToDateTime(DateAndTime);
                 intReturnHour = Convert.ToInt32(ts.TotalHours);
-            } catch (Exception ex) {
-                throw ex;
+            } catch (Exception) {
+                throw;
             }
 
             return intReturnHour;
@@ -435,6 +436,42 @@ namespace Common.tools {
         public static string getAppSettings(string key, string defaultValue) {
             string result = ConfigurationManager.AppSettings[key];
             return ((string.IsNullOrEmpty(result)) ? defaultValue : result);
+        }
+
+        #endregion
+
+        #region *** 取得網頁內容(網路爬蟲) ***
+
+        /// <summary>
+        /// 取得網頁內容字串
+        /// </summary>
+        /// <param name="url">網頁 url</param>
+        /// <returns>string</returns>
+        public static string getWebContent(string url) {
+            return getWebContent(url, Encoding.Default);
+        }
+
+        /// <summary>
+        /// 取得網頁內容字串
+        /// </summary>
+        /// <param name="url">網頁 url</param>
+        /// <param name="encoding">指定的編碼方式</param>
+        /// <exception cref="Exception"></exception>
+        /// <returns>List<object></returns>
+        public static string getWebContent(string url, Encoding encoding) {
+            string result = string.Empty;
+            using (WebClient webClient = new WebClient()) {
+                webClient.Proxy = null;
+                webClient.Encoding = encoding;
+
+                try {
+                    result = webClient.DownloadString(url);
+                } catch (Exception) {
+                    throw;
+                }
+            }
+
+            return result;
         }
 
         #endregion
