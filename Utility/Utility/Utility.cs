@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;   //捉 Server IP 用
 using System.Web;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 //網站共用功能函式庫
 namespace Common.tools {
@@ -472,6 +473,28 @@ namespace Common.tools {
             }
 
             return result;
+        }
+
+        #endregion
+
+        #region *** Exception 例外資訊處理 ***
+
+        /// <summary>
+        /// 取得例外資訊行號
+        /// </summary>
+        /// <param name="ex">Excetion例外物件</param>
+        /// <returns>int</returns>
+        public static int getExLineNumber(Exception ex) {
+            return new StackTrace(ex, true).GetFrame(0).GetFileLineNumber();
+        }
+
+        /// <summary>
+        /// 取得例外資訊欄位號
+        /// </summary>
+        /// <param name="ex">Excetion例外物件</param>
+        /// <returns>int</returns>
+        public static int getExColumnNumber(Exception ex) {
+            return new StackTrace(ex, true).GetFrame(0).GetFileColumnNumber();
         }
 
         #endregion
