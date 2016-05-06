@@ -142,11 +142,10 @@ namespace Common.tools {
         /// </summary>
         /// <returns></returns>
         public static string getServerIP() {
-            //string IP4Address = string.Empty;
-            string IP4Address = "";
+            string IP4Address = string.Empty;
 
             foreach (IPAddress IPA in Dns.GetHostAddresses(Dns.GetHostName())) {
-                if (IPA.AddressFamily.ToString() == "InterNetwork") //InterNetwork 或 InterNetworkV6
+                if (IPA.AddressFamily.ToString().ToUpperInvariant().Equals("INTERNETWORK")) //InterNetwork 或 InterNetworkV6
                 {
                     IP4Address = IPA.ToString().Trim();
                     break;
