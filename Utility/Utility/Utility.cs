@@ -499,5 +499,34 @@ namespace Common.tools {
 
         #endregion
 
+        #region *** 檔案建立 ***
+
+        /// <summary>
+        /// 建立文字檔案
+        /// </summary>
+        /// <param name="dir">文字檔案存放路徑</param>
+        /// <param name="fileNameWithExt">檔名 + 副檔名</param>
+        /// <param name="content">文字檔案內容</param>
+        /// <returns>List<object></returns>
+        public static List<object> createTextFile(string dir, string fileNameWithExt, string content) {
+            List<object> resultList = new List<object>();
+
+            if (!Directory.Exists(dir)) {
+                Directory.CreateDirectory(dir);
+            }
+
+            try {
+                File.WriteAllText(string.Concat(dir, fileNameWithExt), content, Encoding.UTF8);
+                resultList.Add(1);
+            } catch (Exception ex) {
+                resultList.Add(0);
+                resultList.Add(ex.Message);
+            }
+
+            return resultList;
+        }
+
+        #endregion
+
     } //end of class
 } //end of namespace
