@@ -8,6 +8,7 @@ using System.Web;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Data.SqlClient;
 
 //網站共用功能函式庫
 namespace Common.tools {
@@ -450,6 +451,25 @@ namespace Common.tools {
             }
 
             return resultList;
+        }
+
+        #endregion
+
+        #region *** SqlDataReader 功能擴充 ***
+
+        /// <summary>
+        /// SqlDataReader 取得 null 值時轉換成指定預設值
+        /// </summary>
+        /// <param name="reader">SqlDataReader</param>
+        /// <param name="readerIdx">SqlDataReader 索引值</param>
+        /// <param name="defaultValue">預設值</param>
+        /// <returns></returns>
+        public static object readerSafeValue(SqlDataReader reader, int readerIdx, object defaultValue) {
+            if (reader.IsDBNull(readerIdx)) {
+                return defaultValue;
+            } else {
+                return reader[readerIdx];
+            }
         }
 
         #endregion
