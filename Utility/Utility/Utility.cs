@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;   //捉 Server IP 用
+using System.Text.RegularExpressions;
 using System.Web;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Data.SqlClient;
 
 //網站共用功能函式庫
 namespace Common.tools {
@@ -17,15 +18,14 @@ namespace Common.tools {
     /// 網站共用的功能
     /// </summary>
     public class Utility {
-        public Utility() { }
 
-        #region ****** 判斷字串的內容是否為數值 (函數x2) ******
+        #region *** 判斷字串的內容是否為數值 ***
 
         /// <summary>
         /// 判斷字串的內容是否為數值 (可判斷整數，亦可判斷帶有小數點的浮點數)
         /// </summary>
         /// <param name="s">要作判斷的字串</param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         public static bool isStringContentNumeric(string s) {
             if (s != null) {
                 int n;
@@ -40,13 +40,13 @@ namespace Common.tools {
             } else {
                 return false;       //不是數值
             }
-        } //end of isStringContentNumeric()
+        }
 
         /// <summary>
         /// 判斷字串的內容是否為整數 (只能判斷整數，無法判斷帶有小數點的浮點數)
         /// </summary>
         /// <param name="s">要作判斷的字串</param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         public static bool isStringContentInteger(string s) {
             if (s != null) {
                 int n;
@@ -58,17 +58,17 @@ namespace Common.tools {
             } else {
                 return false;       //不是數值
             }
-        } //end of isStringContentInteger()
+        }
 
-        #endregion ****** 判斷字串的內容是否為數值 ******
+        #endregion
 
-        #region ****** 取得 Server IP 或使用者 IP (函數x2) ******
+        #region *** 取得 Server IP 或使用者 IP ***
 
         /// <summary>
         /// 取得 Server IP (IPv4)
         /// 從本機執行會得到本機的 IP，放在 Server 上會得到 Server 的 IP 。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>string</returns>
         public static string getServerIP() {
             string IP4Address = string.Empty;
 
@@ -88,7 +88,7 @@ namespace Common.tools {
         /// 取得使用者 IP (IPv4)
         /// 從本機執行會得到「::1」字樣，放在 Server 上會得到 user 的 IP 。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>string</returns>
         public static string getUserIP() {
             string strUserIP = "";
 
@@ -123,11 +123,11 @@ namespace Common.tools {
             //從本機執行會得到「::1」字樣，放在 Server 上會得到 user 的 IP
             return strUserIP;
 
-        } //end of getUserIP()
+        }
 
-        #endregion ****** 取得 Server IP 或使用者 IP ******
+        #endregion
 
-        #region ****** 產生不重複的亂數  ******
+        #region *** 產生不重複的亂數 ***
 
         /// <summary> 
         /// 產生不重複的亂數 (「產生亂數的範圍上限」至「「產生亂數的範圍下限」」之間的個數，不可小於「產生亂數的數量」，否則會跑不出迴圈)
@@ -135,9 +135,9 @@ namespace Common.tools {
         /// <param name="intLower"></param>產生亂數的範圍下限 
         /// <param name="intUpper"></param>產生亂數的範圍上限 
         /// <param name="intNum"></param>產生亂數的數量 
-        /// <returns></returns> 
-        public static System.Collections.Generic.List<int> makeRand(int intLower, int intUpper, int intNum) {
-            System.Collections.Generic.List<int> arrayRand = new System.Collections.Generic.List<int>();
+        /// <returns>List<int></returns> 
+        public static List<int> makeRand(int intLower, int intUpper, int intNum) {
+            List<int> arrayRand = new List<int>();
 
             Random random = new Random((int)DateTime.Now.Ticks);
             int intRnd;
@@ -158,16 +158,16 @@ namespace Common.tools {
         //    Response.Write(i + ", ");
         //}
 
-        #endregion ****** 產生不重複的亂數  ******
+        #endregion
 
-        #region ****** 取得文章多久前發布的距離時間  ******
+        #region *** 取得文章多久前發布的距離時間 ***
 
         /// <summary> 
         /// 判斷文章多久前發布的距離時間
         /// </summary> 
-        /// <param name="startDate"></param>文章發佈時間 
-        /// <returns></returns> 
-        public static String getStringDateRegin(string startDate) {
+        /// <param name="startDate">文章發佈時間</param>
+        /// <returns>string</returns> 
+        public static string getStringDateRegin(string startDate) {
             DateTime STime = DateTime.Parse(startDate); //起始日
             DateTime ETime = Convert.ToDateTime(DateTime.Now);//結束日
             TimeSpan Total = ETime.Subtract(STime); //日期相減
@@ -190,15 +190,16 @@ namespace Common.tools {
 
             return Rdate;
         }
-        #endregion ****** 取得文章多久前發布的距離時間  ******
 
-        #region ****** 依傳入的日期時間，取得與系統時間的差距(小時) ******
+        #endregion
+
+        #region *** 依傳入的日期時間，取得與系統時間的差距(小時) ***
 
         /// <summary>
         /// 依傳入的日期時間，取得與系統時間的差距(小時)
         /// </summary>
         /// <param name="DateAndTime">傳入的日期時間</param>
-        /// <returns></returns>
+        /// <returns>int</returns>
         public static int getTimeSpanByHour(string DateAndTime) {
             int intReturnHour = 0;
             TimeSpan ts;
@@ -211,30 +212,30 @@ namespace Common.tools {
             }
 
             return intReturnHour;
-        } //end of getTimeSpanByHour()
+        }
 
-        #endregion ****** 依傳入的日期時間，取得與系統時間的差距(小時) ******
+        #endregion
 
-        #region ****** 轉址至路由定義的key名 ******
+        #region *** 轉址至路由定義的key名 ***
 
         /// <summary>
         /// 轉址至路由定義的key名
         /// </summary>
-        /// <param name="routeKey"></param>
+        /// <param name="routeKey">路由定義的key名</param>
         public static void toRoute(string routeKey) {
             HttpContext.Current.Response.RedirectToRoute(routeKey);
         }
 
         #endregion
 
-        #region ****** 將字串轉換為Base64字串 ******
+        #region *** 將字串轉換為Base64字串 ***
 
         /// <summary>
         /// 將字串轉換為Base64字串
         /// </summary>
         /// <param name="originStr">來源字串</param>
         /// <param name="encoding">編碼方式</param>
-        /// <returns></returns>
+        /// <returns>string</returns>
         public static string stringToBase64(string originStr, Encoding encoding) {
             string outPut = null;
             if (!string.IsNullOrEmpty(originStr)) {
@@ -246,7 +247,7 @@ namespace Common.tools {
 
         #endregion
 
-        #region****** 利用正則表示式判斷字元是否為中文字，返回指定長度的字串 ******
+        #region *** 利用正則表示式判斷字元是否為中文字，返回指定長度的字串 ***
 
         /// <summary>
         /// 利用正則表示式判斷字元是否為中文字，返回指定長度的字串
@@ -277,14 +278,14 @@ namespace Common.tools {
 
         #endregion
 
-        #region ****** 檢查現在時間是否介於指定時間區間 ******
+        #region *** 檢查現在時間是否介於指定時間區間 ***
 
         /// <summary>
         /// 檢查現在時間是否介於指定時間區間
         /// </summary>
         /// <param name="beginDT">要檢查的開始時間</param>
         /// <param name="endDT">要檢查的結束時間</param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         public static bool checkNowDateTimeInScope(DateTime beginDT, DateTime endDT) {
             DateTime now = DateTime.Now;
             return (beginDT <= now && now <= endDT);
@@ -292,7 +293,7 @@ namespace Common.tools {
 
         #endregion
 
-        #region  ***** 改變圖檔尺寸 *****
+        #region *** 改變圖檔尺寸 ***
 
         /// <summary>
         /// 取得圖檔串流並改變圖檔像素比與解析度
@@ -350,7 +351,7 @@ namespace Common.tools {
         /// 取得 web.config 或 app.config AppSettings 值
         /// </summary>
         /// <param name="key">AppSettings key 名</param>
-        /// <returns></returns>
+        /// <returns>string</returns>
         public static string getAppSettings(string key) {
             return ConfigurationManager.AppSettings[key];
         }
@@ -360,7 +361,7 @@ namespace Common.tools {
         /// </summary>
         /// <param name="key">AppSettings key 名</param>
         /// <param name="defaultValue">若無取得相對應資料，預設傳回的值</param>
-        /// <returns></returns>
+        /// <returns>string</returns>
         public static string getAppSettings(string key, string defaultValue) {
             string result = ConfigurationManager.AppSettings[key];
             return ((string.IsNullOrEmpty(result)) ? defaultValue : result);
@@ -368,7 +369,7 @@ namespace Common.tools {
 
         #endregion
 
-        #region *** 取得網頁內容(網路爬蟲) ***
+        #region *** 取得網頁第一次輸出的靜態內容 ***
 
         /// <summary>
         /// 取得網頁內容字串
@@ -391,7 +392,7 @@ namespace Common.tools {
             using (WebClient webClient = new WebClient()) {
                 webClient.Proxy = null;
                 webClient.Encoding = encoding;
-                
+
                 try {
                     result = webClient.DownloadString(url);
                 } catch (Exception) {
@@ -463,7 +464,7 @@ namespace Common.tools {
         /// <param name="reader">SqlDataReader</param>
         /// <param name="readerIdx">SqlDataReader 索引值</param>
         /// <param name="defaultValue">預設值</param>
-        /// <returns></returns>
+        /// <returns>object</returns>
         public static object readerSafeValue(SqlDataReader reader, int readerIdx, object defaultValue) {
             if (reader.IsDBNull(readerIdx)) {
                 return defaultValue;
@@ -474,5 +475,120 @@ namespace Common.tools {
 
         #endregion
 
-    } //end of class
-} //end of namespace
+        #region *** Cookie 操作 ***
+
+        /// <summary>
+        /// 寫入 cookie 多值集合 (處理成功回傳空字串，失敗回傳例外訊息)
+        /// </summary>
+        /// <param name="cookieName">cookie 名稱</param>
+        /// <param name="cookieValues">cookie 鍵值集合</param>
+        /// <param name="expires">cookie 到期日期</param>
+        /// <param name="isHttpOnly">cookie 是否允許 client 端存取 (預設可以)</param>
+        /// <returns>Tuple<bool, string></returns>
+        public static string setCookieValues(string cookieName, Dictionary<string, object> cookieValues,
+            DateTime expires, bool isHttpOnly = false) {
+
+            return setCookieValues(cookieName, (object)cookieValues, expires, isHttpOnly);
+        }
+
+        /// <summary>
+        /// 寫入 cookie 單一值 (處理成功回傳空字串，失敗回傳例外訊息)
+        /// </summary>
+        /// <param name="cookieName">cookie 集合名稱</param>
+        /// <param name="cookieValues">cookie 值</param>
+        /// <param name="expires">cookie 到期日期</param>
+        /// <param name="isHttpOnly">cookie 是否允許 client 端存取 (預設可以)</param>
+        /// <returns>string</returns>
+        public static string setCookieValues(string cookieName, object cookieValues,
+            DateTime expires, bool isHttpOnly = false) {
+
+            string result = string.Empty;
+            HttpCookie cookie;
+
+            if (HttpContext.Current.Request.Cookies[cookieName] == null) {
+                cookie = new HttpCookie(cookieName);
+            } else {
+                cookie = HttpContext.Current.Request.Cookies.Get(cookieName);
+            }
+
+            if (cookieValues is Dictionary<string, object>) {
+                foreach (var item in cookieValues as Dictionary<string, object>) {
+                    cookie[item.Key] = Convert.ToString(item.Value);
+                }
+            } else {
+                cookie.Value = Convert.ToString(cookieValues);
+            }
+
+            cookie.Expires = expires;
+            cookie.HttpOnly = isHttpOnly;
+
+            try {
+                HttpContext.Current.Response.SetCookie(cookie);
+            } catch (Exception ex) {
+                result = ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 取得 cookie 單一值
+        /// </summary>
+        /// <param name="cookieName">cookie 名稱</param>
+        /// <param name="keyName">cookie 集合鍵名</param>
+        /// <returns>string</returns>
+        public static string getCookieValue(string cookieName, string keyName = null) {
+            string result = string.Empty;
+
+            if (HttpContext.Current.Request.Cookies[cookieName] != null) {
+                if (keyName == null) {
+                    result = HttpContext.Current.Request.Cookies.Get(cookieName).Value;
+                } else {
+                    result = HttpContext.Current.Request.Cookies.Get(cookieName).Values[keyName];
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 取得 cookie 集合內容
+        /// </summary>
+        /// <param name="cookieName">cookie 集合名稱</param>
+        /// <returns></returns>
+        public static NameValueCollection getCookieValueCollection(string cookieName) {
+            NameValueCollection result = new NameValueCollection();
+
+            if (HttpContext.Current.Request.Cookies[cookieName] != null) {
+                result = HttpContext.Current.Request.Cookies.Get(cookieName).Values;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 完整刪除 cookie (處理成功回傳空字串，失敗回傳例外訊息)
+        /// </summary>
+        /// <param name="cookieName">cookie 名稱</param>
+        /// <returns>string</returns>
+        public static string deleteCookie(string cookieName) {
+            string result = string.Empty;
+
+            if (HttpContext.Current.Request.Cookies[cookieName] != null) {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies.Get(cookieName);
+                cookie.Expires = DateTime.Now.AddDays(-1d);
+
+                try {
+                    HttpContext.Current.Response.SetCookie(cookie);
+                } catch (Exception ex) {
+                    result = ex.Message;
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
+
+    }
+}
