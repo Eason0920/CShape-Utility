@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PasswordUtility;
+using PasswordUtility.PasswordGenerator;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -586,6 +588,59 @@ namespace Common.tools {
             }
 
             return result;
+        }
+
+        #endregion
+
+        #region *** 密碼規則建立與檢查 ***
+
+        public enum PasswordRule { NORMAL, CHECK_UPPERCASE, CHECK_UPPERCASE_WITH_NUMERIC };
+
+        /// <summary>
+        /// 依據指定的規則產生密碼
+        /// </summary>
+        /// <param name="length">密碼長度</param>
+        /// <param name="useUpperCase">是否包含大寫字元</param>
+        /// <param name="useNumeric">是否包含數字字元</param>
+        /// <param name="useSpecialChar">是否包含特殊字元</param>
+        /// <returns>string</returns>
+        public static string generatePassword(int length, bool useUpperCase, bool useNumeric, bool useSpecialChar = false) {
+            return PwGenerator.Generate(length, useUpperCase, useNumeric, useSpecialChar).ReadString();
+        }
+
+        /// <summary>
+        /// 檢查密碼規則
+        /// </summary>
+        /// <param name="password">要檢查的密碼字串</param>
+        /// <param name="minLength">最小密碼長度</param>
+        /// <param name="maxLength">最大密碼長度(預設不限制)</param>
+        /// <param name="rule">密碼檢查規則列舉</param>
+        /// <returns></returns>
+        public static bool checkPasswordRule(string password, int minLength, int maxLength = 0, PasswordRule rule = PasswordRule.NORMAL) {
+            string pattern = string.Empty;
+            switch (rule) {
+                case PasswordRule.NORMAL:
+                    pattern = @"^(?=.*[a-z]).{{0},{1}}$";
+                    break;
+                case PasswordRule.CHECK_UPPERCASE:
+                    pattern = @"^(?=.*[a-z])(?=.*[A-Z]).{{0},{1}}$";
+                    break;
+                case PasswordRule.CHECK_UPPERCASE_WITH_NUMERIC:
+                    pattern = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{{0},{1}}$";
+                    break;
+            }
+
+            pattern = string.Format(pattern, minLength, ((maxLength.Equals(0)) ? string.Empty : maxLength.ToString()));
+            return new Regex(pattern).IsMatch(password);
+        }
+
+        /// <summary>
+        /// 檢查密碼強度
+        /// </summary>
+        /// <param name="password">要檢查的密碼字串</param>
+        /// <returns></returns>
+        public static uint checkPasswordStrenfth(string password) {
+            return QualityEstimation.EstimatePasswordBits(password.ToCharArray());
         }
 
         #endregion
