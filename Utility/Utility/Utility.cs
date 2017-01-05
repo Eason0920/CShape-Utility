@@ -615,7 +615,7 @@ namespace Common.tools {
         /// <param name="minLength">最小密碼長度</param>
         /// <param name="maxLength">最大密碼長度(預設不限制)</param>
         /// <param name="rule">密碼檢查規則列舉</param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         public static bool checkPasswordRule(string password, int minLength, int maxLength = 0, PasswordRule rule = PasswordRule.NORMAL) {
             string pattern = string.Empty;
             switch (rule) {
@@ -638,7 +638,7 @@ namespace Common.tools {
         /// 檢查密碼強度
         /// </summary>
         /// <param name="password">要檢查的密碼字串</param>
-        /// <returns></returns>
+        /// <returns>uint</returns>
         public static uint checkPasswordStrenfth(string password) {
             return QualityEstimation.EstimatePasswordBits(password.ToCharArray());
         }
