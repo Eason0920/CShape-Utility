@@ -594,7 +594,15 @@ namespace Common.tools {
 
         #region *** 密碼規則建立與檢查 ***
 
-        public enum PasswordRule { NORMAL, CHECK_UPPERCASE, CHECK_UPPERCASE_WITH_NUMERIC };
+        public enum PasswordIncludeRule {
+            NUMERIC,
+            LOWERCASE,
+            UPPERCASE,
+            LOWERCASE_UPPERCASE,
+            NUMERIC_LOWERCASE,
+            NUMERIC_UPPERCASE,
+            NUMERIC_LOWERCASE_UPPERCASE
+        };
 
         /// <summary>
         /// 依據指定的規則產生密碼
@@ -616,17 +624,31 @@ namespace Common.tools {
         /// <param name="maxLength">最大密碼長度(預設不限制)</param>
         /// <param name="rule">密碼檢查規則列舉</param>
         /// <returns>bool</returns>
-        public static bool checkPasswordRule(string password, int minLength, int maxLength = 0, PasswordRule rule = PasswordRule.NORMAL) {
+        public static bool checkPasswordRule(string password, int minLength, int maxLength = 0, PasswordIncludeRule rule = PasswordIncludeRule.NUMERIC) {
             string pattern = string.Empty;
             switch (rule) {
-                case PasswordRule.NORMAL:
-                    pattern = @"^(?=.*[a-z]).{{0},{1}}$";
+                case PasswordIncludeRule.NUMERIC:
+                    pattern = @"^(?=.*\d).{{{0},{1}}}$";
                     break;
-                case PasswordRule.CHECK_UPPERCASE:
-                    pattern = @"^(?=.*[a-z])(?=.*[A-Z]).{{0},{1}}$";
+                case PasswordIncludeRule.LOWERCASE:
+                    pattern = @"^(?=.*[a-z]).{{{0},{1}}}$";
                     break;
-                case PasswordRule.CHECK_UPPERCASE_WITH_NUMERIC:
-                    pattern = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{{0},{1}}$";
+                case PasswordIncludeRule.UPPERCASE:
+                    pattern = @"^(?=.*[A-Z]).{{{0},{1}}}$";
+                    break;
+                case PasswordIncludeRule.LOWERCASE_UPPERCASE:
+                    pattern = @"^(?=.*[a-z])(?=.*[A-Z]).{{{0},{1}}}$";
+                    break;
+                case PasswordIncludeRule.NUMERIC_LOWERCASE:
+                    pattern = @"^(?=.*\d)(?=.*[a-z]).{{{0},{1}}}$";
+                    break;
+                case PasswordIncludeRule.NUMERIC_UPPERCASE:
+                    pattern = @"^(?=.*\d)(?=.*[A-Z]).{{{0},{1}}}$";
+                    break;
+                case PasswordIncludeRule.NUMERIC_LOWERCASE_UPPERCASE:
+                    pattern = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{{{0},{1}}}$";
+                    break;
+                default:
                     break;
             }
 
@@ -639,7 +661,7 @@ namespace Common.tools {
         /// </summary>
         /// <param name="password">要檢查的密碼字串</param>
         /// <returns>uint</returns>
-        public static uint checkPasswordStrenfth(string password) {
+        public static uint checkPasswordStrength(string password) {
             return QualityEstimation.EstimatePasswordBits(password.ToCharArray());
         }
 
